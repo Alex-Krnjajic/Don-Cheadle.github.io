@@ -18,7 +18,7 @@
     console.log(dataConnection); 
     
     const event = new CustomEvent("peer-changed",{
-      detail: { peerId: dataConnection },
+      detail: { peerId: dataConnection.peer },
     });
     document.dispatchEvent(event);
   };
