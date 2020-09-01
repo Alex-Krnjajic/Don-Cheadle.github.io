@@ -24,7 +24,6 @@
   console.log(myPeerId);
 
   const refresh = () => {
-   // let promise = new Promise(function(resolve,reject){
     const peersEl = document.querySelector('.peers');
     peersEl.firstChild && peersEl.firstChild.remove();
     peer.listAllPeers((peers) => {
@@ -44,12 +43,12 @@
       peersEl.appendChild(ul);
 
     })
-   // resolve();
   }
   
 
-    function peerOnConnection(dataConnection)  {
+    async function peerOnConnection(dataConnection)  {
     refresh();
+    await new Promise(r => setTimeout(r, 2000));
     conn && conn.close();
     conn = dataConnection;
     console.log(dataConnection); 
