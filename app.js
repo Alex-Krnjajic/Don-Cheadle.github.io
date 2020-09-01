@@ -17,7 +17,7 @@
     messageWrapper.classList.add("message");
     messageWrapper.classList.add(writer);
     messageWrapper.appendChild(newMessageDiv);
-    messagesDiv.appendChild(MessageWrapper);
+    messagesDiv.appendChild(messageWrapper);
   }
 
   const myPeerId = location.hash.slice(1);
