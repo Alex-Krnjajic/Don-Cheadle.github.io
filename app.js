@@ -9,13 +9,55 @@
     console.log(err);
   }
 
+  function printMessage(message, writer) {
+    const messagesDiv = document.querySelector(".messages");
+    const messageWrapper = document.createElement("div");
+    const newMessageDiv = document.createElement("div");
+    newMessageDiv.innerText = message;
+    messageWrapper.classList.add("message");
+    messageWrapper.classList.add(writer);
+    messageWrapper.appendChild(newMessageDiv);
+    messagesDiv.appendChild(MessageWrapper);
+  }
+
   const myPeerId = location.hash.slice(1);
   console.log(myPeerId);
 
-  const peerOnConnection = (dataConnection) => {
+  const refresh = () => {
+   // let promise = new Promise(function(resolve,reject){
+    const peersEl = document.querySelector('.peers');
+    peersEl.firstChild && peersEl.firstChild.remove();
+    peer.listAllPeers((peers) => {
+      const ul = document.createElement('ul');
+      peers
+        .filter((peerId) => peerId !== myPeerId)
+        .forEach((peerId) => {
+          const li = document.createElement('li');
+          const button = document.createElement('button');
+          button.innerText = peerId;
+          button.classList.add("connect-button");
+          button.classList.add(`peerId-${peerId}`);
+          button.addEventListener('click', connectToPeerClick);
+          li.appendChild(button);
+          ul.appendChild(li);
+        });
+      peersEl.appendChild(ul);
+
+    })
+   // resolve();
+  }
+  
+
+    function peerOnConnection(dataConnection)  {
+    refresh();
     conn && conn.close();
     conn = dataConnection;
     console.log(dataConnection); 
+
+    conn.on("data", (data) => {
+      printMessage(data, "them");
+      console.log(data);
+    });
     
     const event = new CustomEvent("peer-changed",{
       detail: { peerId: dataConnection.peer },
@@ -33,6 +75,10 @@
           detail: { peerId: peerId },
         });
         document.dispatchEvent(event);
+
+        conn.on("data", (data) => {
+          console.log
+        })
     });
   };
 
@@ -70,26 +116,8 @@
 
 
   document.querySelector('.list-all-peers-button').addEventListener('click', () => {
-    const peersEl = document.querySelector('.peers');
-    peersEl.firstChild && peersEl.firstChild.remove();
-    peer.listAllPeers((peers) => {
-      const ul = document.createElement('ul');
-      peers
-        .filter((peerId) => peerId !== myPeerId)
-        .forEach((peerId) => {
-          const li = document.createElement('li');
-          const button = document.createElement('button');
-          button.innerText = peerId;
-          button.classList.add("connect-button");
-          button.classList.add(`peerId-${peerId}`);
-          button.addEventListener('click', connectToPeerClick);
-          li.appendChild(button);
-          ul.appendChild(li);
-        });
-      peersEl.appendChild(ul);
-
-    })
-  })
+    refresh();
+  });
   document.addEventListener('peer-changed', (e) => {
     const peerId = e.detail.peerId;
     console.log(peerId);
@@ -98,5 +126,12 @@
       el.classList.remove("connected");
     });
     document.querySelector(peerIdClass).classList.add("connected");
+  })
+  document.querySelector(".send-new-message-button").addEventListener("click", () => {
+    let message = document.querySelector(".new-message").value;
+    conn.send(message);
+    console.log(message);
+
+    printMessage(message, "me");
   })
 })();
