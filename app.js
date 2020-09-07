@@ -120,6 +120,8 @@
     console.log(dataConnection);
 
     conn.on("data", (data) => {
+      let d = new Date();
+      time = " /" + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
       printMessage(data, "them");
       console.log(data);
     });
@@ -144,7 +146,10 @@
       document.dispatchEvent(event);
 
       conn.on("data", (data) => {
-        console.log;
+        let d = new Date();
+        time =
+          " /" + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
+        printMessage(data, "them");
       });
     });
   };
@@ -166,15 +171,6 @@
     //   ],
     // },
   });
-
-  let yoshi = (size) => {
-    output = "b";
-    for (var i = 0; i < size; i++) {
-      output += "e";
-    }
-    output += "g yoshi";
-    document.querySelector(".yoshi").innerHTML = output;
-  };
 
   peer.on("open", peerOnOpen);
   peer.on("error", peerOnError);
